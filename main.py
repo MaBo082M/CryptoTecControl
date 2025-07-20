@@ -27,7 +27,7 @@ def generate_progress_chart(current, target):
 # Forecast anzeigen
 async def forecast(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
-    current = float(os.getenv("TODAY_EARNINGS", "0"))
+    current = float(os.getenv("TOTAL_PROFIT", "0"))
     percent = min(100, int(current / TARGET * 100))
     blocks = int(percent / 10)
     bar = "█" * blocks + "░" * (10 - blocks)
@@ -97,7 +97,7 @@ async def monthly_forecast(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.callback_query.answer("🚫 Kein Zugriff", show_alert=True)
         return
 
-    today = float(os.getenv("TODAY_EARNINGS", "0"))
+    today = float(os.getenv("TOTAL_PROFIT", "0"))
     days_30 = today * 30
     days_60 = today * 60
     days_90 = today * 90
