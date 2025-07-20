@@ -208,8 +208,8 @@ scheduler.add_job(lambda: asyncio.run(daily_check()), 'cron', hour=12, minute=0)
 app.add_handler(CommandHandler("start", start))
 app.add_handler(CallbackQueryHandler(forecast, pattern="^forecast$"))
 app.add_handler(CallbackQueryHandler(sniper, pattern="^sniper$"))
-app.add_handler(CallbackQueryHandler(monthly_forecast, pattern="^monthly_forecast"))
-app.add_handler(CallbackQueryHandler(download_pdf, pattern="^download_pdf"))
+app.add_handler(CallbackQueryHandler(monthly_forecast, pattern="^monthly_forecast$"))
+app.add_handler(CallbackQueryHandler(download_pdf, pattern="^download_pdf$"))
 app.add_handler(CallbackQueryHandler(hypocoin, pattern="^hypocoin$"))
 
 # Start Polling
