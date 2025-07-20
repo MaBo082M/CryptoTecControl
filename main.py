@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 import logging
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
@@ -25,7 +26,8 @@ async def handle_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if query.data == "forecast":
         await query.edit_message_text(text="📈 Forecast erfolgreich geöffnet.")
 Tagesziel 100 EUF Netto
-Status: 🔄 Noch nicht erreicht")
+await query.edit_message_text(text="🔄 Status: Noch nicht erreicht")
+
 
 if __name__ == '__main__':
     app = ApplicationBuilder().token(TOKEN).build()
