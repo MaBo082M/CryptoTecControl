@@ -2,12 +2,15 @@ import os
 import matplotlib.pyplot as plt
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes
+from apscheduler.schedulers.background import BackgroundScheduler
 
 TOKEN = os.getenv("BOT_TOKEN")
 OWNER_IDS = list(map(int, os.getenv("OWNER_IDS", "1349917110").split(",")))
 TARGET = float(os.getenv("TARGET_EUR", "100").replace(",", "."))
 
 app = Application.builder().token(TOKEN).build()
+scheduler = BackgroundScheduler()
+scheduler.start()
 
 def generate_progress_chart(current, target):
     percent = min(100, current / target * 100)
@@ -158,6 +161,19 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         InlineKeyboardButton("🤖 SniperBot-Status", callback_data="sniper")
     ]]
     await update.effective_chat.send_message("👋 Willkommen im CryptoTecControl Bot\n\nWähle eine Option:", reply_markup=InlineKeyboardMarkup(keyboard))
+
+# Automatischer Tagescheck um 12:00 Uhr
+async def daily_check():
+    from telegram import Bot
+    bot = Bot(TOKEN)
+    for user_id in OWNER_IDS:
+        chat_id = int(user_id)
+        current = float(os.getenv("TOTAL_PROFIT", "0").replace(",", "."))
+        status = "✅ Ziel erreicht!" if current >= TARGET else "❌ Noch nicht erreicht"
+        await bot.send_message(chat_id=chat_id, text=f"📊 Tagesziel-Check (12:00 Uhr):\nAktuell: {current:.2f} €\nZiel: {TARGET:.2f} €\nStatus: {status}")
+
+import asyncio
+scheduler.add_job(lambda: asyncio.run(daily_check()), 'cron', hour=12, minute=0)
 
 # Handler
 app.add_handler(CommandHandler("start", start))
