@@ -204,15 +204,28 @@ async def daily_check():
 import asyncio
 scheduler.add_job(lambda: asyncio.run(daily_check()), 'cron', hour=12, minute=0)
 
+# Zentrale Callback-Handler Logik
+async def handle_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    data = query.data
+
+    if data == "forecast":
+        await forecast(update, context)
+    elif data == "sniper":
+        await sniper(update, context)
+    elif data == "monthly_forecast":
+        await monthly_forecast(update, context)
+    elif data == "download_pdf":
+        await download_pdf(update, context)
+    elif data == "hypocoin":
+        await hypocoin(update, context)
+    else:
+        await query.answer("❌ Unbekannte Aktion.")
+
 # Handler
 app.add_handler(CommandHandler("start", start))
-app.add_handler(CallbackQueryHandler(forecast, pattern="^forecast$"))
-app.add_handler(CallbackQueryHandler(sniper, pattern="^sniper$"))
-app.add_handler(CallbackQueryHandler(monthly_forecast, pattern="^monthly_forecast$"))
-app.add_handler(CallbackQueryHandler(download_pdf, pattern="^download_pdf$"))
-app.add_handler(CallbackQueryHandler(hypocoin, pattern="^hypocoin$"))
+app.add_handler(CallbackQueryHandler(handle_callback))
 
 # Start Polling
 if __name__ == "__main__":
     app.run_polling()
-
