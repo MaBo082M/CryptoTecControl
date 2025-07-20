@@ -111,15 +111,15 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await forecast(update, context)
     elif data == "sniper":
         sniper_status = os.getenv("SNIPER_STATUS", "BETA")
-        await query.edit_message_text(f"🤖 SniperBot ist aktiv. Modul-Status: {sniper_status}.")
+        await context.bot.send_message(chat_id=chat_id, text=f"🤖 SniperBot ist aktiv. Modul-Status: {sniper_status}.")
     elif data == "monthly_forecast":
-        await query.edit_message_text("📅 Monatsprognose: Dynamische Prognose wird geladen… (Platzhalter)")
+        await context.bot.send_message(chat_id=chat_id, text="📅 Monatsprognose: Dynamische Prognose wird geladen… (Platzhalter)")
     elif data == "download_pdf":
-        await query.edit_message_text("📄 Forecast-PDF: Link folgt demnächst auf crypto-tec.xyz")
+        await context.bot.send_message(chat_id=chat_id, text="📄 Forecast-PDF: Link folgt demnächst auf crypto-tec.xyz")
     elif data == "hypocoin":
-        await query.edit_message_text("💰 HypoCoin-Modul wird geladen… Bald verfügbar für VIPs.")
+        await context.bot.send_message(chat_id=chat_id, text="💰 HypoCoin-Modul wird geladen… Bald verfügbar für VIPs.")
     else:
-        await query.edit_message_text("Unbekannter Befehl.")
+        await context.bot.send_message(chat_id=chat_id, text="Unbekannter Befehl.")
 
 app.add_handler(CommandHandler("start", start))
 app.add_handler(CallbackQueryHandler(button_handler))
