@@ -1,4 +1,4 @@
-mport os
+import os
 import matplotlib.pyplot as plt
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes
@@ -59,13 +59,13 @@ Fortschritt: [{bar}] {percent} %
         ]]
 
     path = generate_progress_chart(current, TARGET)
-   await update.callback_query.answer()
-   await context.bot.send_photo(
-    chat_id=update.effective_chat.id,
-    photo=open(path, "rb"),
-    caption=text,
-    reply_markup=InlineKeyboardMarkup(keyboard)
-)
+    await update.callback_query.answer()
+    await context.bot.send_photo(
+       chat_id=update.effective_chat.id,
+       photo=open(path, "rb"),
+       caption=text,
+       reply_markup=InlineKeyboardMarkup(keyboard)
+    )
 
 # SniperBot Status anzeigen
 async def sniper(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -152,7 +152,3 @@ app.add_handler(CallbackQueryHandler(download_pdf, pattern="^download_pdf$"))
 # Start Polling
 if __name__ == "__main__":
     app.run_polling()
-
-
- 
-
