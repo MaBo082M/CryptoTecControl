@@ -76,12 +76,17 @@ Fortschritt: [{bar}] {percent} %
 
     if update.callback_query:
         await update.callback_query.answer()
-    await context.bot.send_photo(
-        chat_id=update.effective_chat.id,
-        photo=open(path, "rb"),
-        caption=text,
-        reply_markup=InlineKeyboardMarkup(keyboard)
-    )
+        await update.callback_query.edit_message_media(
+            media=InputMediaPhoto(media=open(path, "rb"), caption=text),
+            reply_markup=InlineKeyboardMarkup(keyboard)
+        )
+    else:
+        await context.bot.send_photo(
+            chat_id=update.effective_chat.id,
+            photo=open(path, "rb"),
+            caption=text,
+            reply_markup=InlineKeyboardMarkup(keyboard)
+        )
 
 # /start Handler
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -99,15 +104,15 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if data == "forecast":
         await forecast(update, context)
     elif data == "sniper":
-        await context.bot.send_message(chat_id, "🤖 SniperBot ist aktiv. Modul-Status: BETA.")
+        await query.edit_message_text("🤖 SniperBot ist aktiv. Modul-Status: BETA.")
     elif data == "monthly_forecast":
-        await context.bot.send_message(chat_id, "📅 Monatsprognose: Work in Progress…")
+        await query.edit_message_text("📅 Monatsprognose: Work in Progress…")
     elif data == "download_pdf":
-        await context.bot.send_message(chat_id, "📄 Forecast-PDF: Link folgt demnächst auf crypto-tec.xyz")
+        await query.edit_message_text("📄 Forecast-PDF: Link folgt demnächst auf crypto-tec.xyz")
     elif data == "hypocoin":
-        await context.bot.send_message(chat_id, "💰 HypoCoin-Modul wird geladen… Bald verfügbar für VIPs.")
+        await query.edit_message_text("💰 HypoCoin-Modul wird geladen… Bald verfügbar für VIPs.")
     else:
-        await context.bot.send_message(chat_id, "Unbekannter Befehl.")
+        await query.edit_message_text("Unbekannter Befehl.")
 
 app.add_handler(CommandHandler("start", start))
 app.add_handler(CallbackQueryHandler(button_handler))
