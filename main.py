@@ -8,6 +8,9 @@ TOKEN = os.getenv("BOT_TOKEN")
 OWNER_IDS = list(map(int, os.getenv("OWNER_IDS", "1349917110").split(",")))
 TARGET = float(os.getenv("TARGET_EUR", "100").replace(",", "."))
 VIP_GROUP_LINK = os.getenv("VIP_GROUP_LINK", "https://t.me/+VollgasHypo")
+SOL_WALLET = os.getenv("SOL_WALLET", "So1MultiWalletAdresseXyz")
+BSC_WALLET = os.getenv("BSC_WALLET", "0xBSCMultiWalletAdresseXyz")
+ETH_WALLET = os.getenv("ETH_WALLET", "0xETHMultiWalletAdresseXyz")
 
 app = Application.builder().token(TOKEN).build()
 scheduler = BackgroundScheduler()
@@ -58,6 +61,7 @@ Status: {status}"""
             [InlineKeyboardButton("🤖 SniperBot-Status", callback_data="sniper")],
             [InlineKeyboardButton("📅 Monats-Forecast", callback_data="monthly_forecast")],
             [InlineKeyboardButton("📄 Forecast-PDF", callback_data="download_pdf")],
+            [InlineKeyboardButton("💸 Einzahlung (SOL/BSC/ETH)", callback_data="deposit")],
             [InlineKeyboardButton("💰 HypoCoin", callback_data="hypocoin")],
             [InlineKeyboardButton("🎟️ VIP-Community", url=VIP_GROUP_LINK)]
         ]
@@ -117,6 +121,9 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await context.bot.send_message(chat_id=chat_id, text="📅 Monatsprognose: Prognose-Visualisierung folgt demnächst.")
     elif data == "download_pdf":
         await context.bot.send_message(chat_id=chat_id, text="📄 Forecast-PDF: Link folgt demnächst auf crypto-tec.xyz")
+    elif data == "deposit":
+        msg = f"💸 Du kannst Einzahlungen an folgende Wallets senden:\n\n🔹 SOL: `{SOL_WALLET}`\n🔸 BSC: `{BSC_WALLET}`\n🔶 ETH: `{ETH_WALLET}`\n\nBitte sende exakt den Betrag, den du im SniperBot einsetzen möchtest."
+        await context.bot.send_message(chat_id=chat_id, text=msg, parse_mode="Markdown")
     elif data == "hypocoin":
         await context.bot.send_message(chat_id=chat_id, text="💰 HypoCoin-Modul wird geladen… Bald verfügbar für VIPs.")
     else:
