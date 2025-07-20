@@ -7,7 +7,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 TOKEN = os.getenv("BOT_TOKEN")
 OWNER_IDS = list(map(int, os.getenv("OWNER_IDS", "1349917110").split(",")))
 TARGET = float(os.getenv("TARGET_EUR", "100").replace(",", "."))
-VIP_GROUP_LINK = os.getenv("VIP_GROUP_LINK", "https://t.me/+EXAMPLE")
+VIP_GROUP_LINK = os.getenv("VIP_GROUP_LINK", "https://t.me/+VollgasHypo")
 
 app = Application.builder().token(TOKEN).build()
 scheduler = BackgroundScheduler()
@@ -106,12 +106,12 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = query.message.chat.id
 
     await query.answer()
-    print(f"Button gedrückt: {data} von Chat-ID: {chat_id}")  # Logging bei Button-Klicks
+    print(f"Button gedrückt: {data} von Chat-ID: {chat_id}")
 
     if data == "forecast":
         await forecast(update, context)
     elif data == "sniper":
-        sniper_status = os.getenv("SNIPER_STATUS", "LIVE")  # Dynamischer Status möglich
+        sniper_status = os.getenv("SNIPER_STATUS", "LIVE")
         await context.bot.send_message(chat_id=chat_id, text=f"🤖 SniperBot ist aktiv. Modul-Status: {sniper_status}.")
     elif data == "monthly_forecast":
         await context.bot.send_message(chat_id=chat_id, text="📅 Monatsprognose: Prognose-Visualisierung folgt demnächst.")
