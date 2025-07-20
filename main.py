@@ -67,13 +67,22 @@ Fortschritt: [{bar}] {percent} %
         ]]
 
     path = generate_progress_chart(current, TARGET)
-    await update.callback_query.answer()
-    await context.bot.send_photo(
-       chat_id=update.effective_chat.id,
-       photo=open(path, "rb"),
-       caption=text,
-       reply_markup=InlineKeyboardMarkup(keyboard)
-    )
+
+    if update.callback_query:
+        await update.callback_query.answer()
+        await context.bot.send_photo(
+            chat_id=update.effective_chat.id,
+            photo=open(path, "rb"),
+            caption=text,
+            reply_markup=InlineKeyboardMarkup(keyboard)
+        )
+    else:
+        await context.bot.send_photo(
+            chat_id=update.effective_chat.id,
+            photo=open(path, "rb"),
+            caption=text,
+            reply_markup=InlineKeyboardMarkup(keyboard)
+        )
 
 # SniperBot Status anzeigen
 async def sniper(update: Update, context: ContextTypes.DEFAULT_TYPE):
