@@ -58,7 +58,8 @@ Status: {status}"""
             [InlineKeyboardButton("🤖 SniperBot-Status", callback_data="sniper")],
             [InlineKeyboardButton("📅 Monats-Forecast", callback_data="monthly_forecast")],
             [InlineKeyboardButton("📄 Forecast-PDF", callback_data="download_pdf")],
-            [InlineKeyboardButton("💰 HypoCoin", callback_data="hypocoin")]
+            [InlineKeyboardButton("💰 HypoCoin", callback_data="hypocoin")],
+            [InlineKeyboardButton("🎟️ VIP-Community", url=VIP_GROUP_LINK)]
         ]
     else:
         text = f"""📈 Öffentliche Vorschau:
@@ -105,15 +106,15 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = query.message.chat.id
 
     await query.answer()
-    print(f"Button gedrückt: {data} von Chat-ID: {chat_id}")
+    print(f"Button gedrückt: {data} von Chat-ID: {chat_id}")  # Logging bei Button-Klicks
 
     if data == "forecast":
         await forecast(update, context)
     elif data == "sniper":
-        sniper_status = os.getenv("SNIPER_STATUS", "LIVE")
+        sniper_status = os.getenv("SNIPER_STATUS", "LIVE")  # Dynamischer Status möglich
         await context.bot.send_message(chat_id=chat_id, text=f"🤖 SniperBot ist aktiv. Modul-Status: {sniper_status}.")
     elif data == "monthly_forecast":
-        await context.bot.send_message(chat_id=chat_id, text="📅 Monatsprognose: Dynamische Prognose wird geladen… (Platzhalter)")
+        await context.bot.send_message(chat_id=chat_id, text="📅 Monatsprognose: Prognose-Visualisierung folgt demnächst.")
     elif data == "download_pdf":
         await context.bot.send_message(chat_id=chat_id, text="📄 Forecast-PDF: Link folgt demnächst auf crypto-tec.xyz")
     elif data == "hypocoin":
@@ -126,4 +127,3 @@ app.add_handler(CallbackQueryHandler(button_handler))
 
 if __name__ == "__main__":
     app.run_polling()
-
