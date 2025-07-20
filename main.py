@@ -1,20 +1,36 @@
 import os
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+import matplotlib.pyplot as plt
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes
 
 TOKEN = os.getenv("BOT_TOKEN")
 OWNER_IDS = list(map(int, os.getenv("OWNER_IDS", "1349917110").split(",")))
-TARGET = float(os.getenv("TARGET_EUR", "100"))
+TARGET = float(os.getenv("TARGET_EUR", "100").replace(",", "."))
 
 app = Application.builder().token(TOKEN).build()
+
+def generate_progress_chart(current, target):
+    percent = min(100, current / target * 100)
+    fig, ax = plt.subplots(figsize=(5, 1))
+    ax.barh([""], [percent], color="#4CAF50")
+    ax.set_xlim(0, 100)
+    ax.set_yticks([])
+    ax.set_xticks([])
+    ax.set_facecolor("none")
+    for spine in ax.spines.values():
+        spine.set_visible(False)
+    path = "/tmp/progress_chart.png"
+    plt.savefig(path, bbox_inches='tight', transparent=True)
+    plt.close()
+    return path
 
 # Forecast anzeigen
 async def forecast(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
-    current = float(os.getenv("TOTAL_PROFIT", "0"))
+    current = float(os.getenv("TOTAL_PROFIT", "0").replace(",", "."))
     snipes = int(os.getenv("SNIPES_TODAY", "0"))
     wins = int(os.getenv("WINS_TODAY", "0"))
-    sniper_profit = float(os.getenv("SNIPER_PROFIT", "0"))
+    sniper_profit = float(os.getenv("SNIPER_PROFIT", "0").replace(",", "."))
 
     percent = min(100, int(current / TARGET * 100))
     blocks = int(percent / 10)
@@ -32,6 +48,7 @@ Snipes: {snipes} | Treffer: {wins}
 Gewinn: +{sniper_profit:.2f} €
 
 Status: {status}"""
+
         keyboard = [[
             InlineKeyboardButton("🔄 Aktualisieren", callback_data="forecast"),
             InlineKeyboardButton("🤖 SniperBot-Status", callback_data="sniper"),
@@ -49,13 +66,25 @@ Fortschritt: [{bar}] {percent} %
             InlineKeyboardButton("🌐 Webseite öffnen", url="https://crypto-tec.xyz")
         ]]
 
+    path = generate_progress_chart(current, TARGET)
+
     if update.callback_query:
         await update.callback_query.answer()
-        await update.callback_query.edit_message_text(text=text, reply_markup=InlineKeyboardMarkup(keyboard))
+        await context.bot.send_photo(
+            chat_id=update.effective_chat.id,
+            photo=open(path, "rb"),
+            caption=text,
+            reply_markup=InlineKeyboardMarkup(keyboard)
+        )
     else:
-        await update.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard))
+        await context.bot.send_photo(
+            chat_id=update.effective_chat.id,
+            photo=open(path, "rb"),
+            caption=text,
+            reply_markup=InlineKeyboardMarkup(keyboard)
+        )
 
-# SniperBot Status
+# SniperBot Status anzeigen
 async def sniper(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     if user_id not in OWNER_IDS:
@@ -64,7 +93,7 @@ async def sniper(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     snipes = int(os.getenv("SNIPES_TODAY", "0"))
     wins = int(os.getenv("WINS_TODAY", "0"))
-    profit = float(os.getenv("TOTAL_PROFIT", "0"))
+    profit = float(os.getenv("TOTAL_PROFIT", "0").replace(",", "."))
     quote = round((wins / snipes) * 100, 1) if snipes > 0 else 0.0
 
     text = f"""🤖 SniperBot-Ergebnisse:
@@ -85,7 +114,7 @@ async def monthly_forecast(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.callback_query.answer("🚫 Kein Zugriff", show_alert=True)
         return
 
-    today = float(os.getenv("TOTAL_PROFIT", "0"))
+    today = float(os.getenv("TOTAL_PROFIT", "0").replace(",", "."))
     days_30 = today * 30
     days_60 = today * 60
     days_90 = today * 90
@@ -117,19 +146,18 @@ async def download_pdf(update: Update, context: ContextTypes.DEFAULT_TYPE):
             caption="📄 Vorschau-Forecast für Gäste. Für Vollzugang: crypto-tec.xyz"
         )
 
-# Start
+# Start mit Button
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     if user_id not in OWNER_IDS:
         keyboard = [[InlineKeyboardButton("🌐 Website öffnen", url="https://crypto-tec.xyz")]]
-        await update.message.reply_text("🚫 Zugriff verweigert. Nur mit Einladung nutzbar.", reply_markup=InlineKeyboardMarkup(keyboard))
+        await update.effective_chat.send_message("🚫 Zugriff verweigert. Nur mit Einladung nutzbar.", reply_markup=InlineKeyboardMarkup(keyboard))
         return
-
     keyboard = [[
         InlineKeyboardButton("📊 Forecast anzeigen", callback_data="forecast"),
         InlineKeyboardButton("🤖 SniperBot-Status", callback_data="sniper")
     ]]
-    await update.message.reply_text("👋 Willkommen im CryptoTecControl Bot\n\nWähle eine Option:", reply_markup=InlineKeyboardMarkup(keyboard))
+    await update.effective_chat.send_message("👋 Willkommen im CryptoTecControl Bot\n\nWähle eine Option:", reply_markup=InlineKeyboardMarkup(keyboard))
 
 # Handler
 app.add_handler(CommandHandler("start", start))
@@ -138,5 +166,6 @@ app.add_handler(CallbackQueryHandler(sniper, pattern="^sniper$"))
 app.add_handler(CallbackQueryHandler(monthly_forecast, pattern="^monthly_forecast$"))
 app.add_handler(CallbackQueryHandler(download_pdf, pattern="^download_pdf$"))
 
+# Start Polling
 if __name__ == "__main__":
     app.run_polling()
