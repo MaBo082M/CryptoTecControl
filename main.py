@@ -90,8 +90,13 @@ Fortschritt: [{bar}] {percent} %
 
 # /start Handler
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Willkommen im CryptoTecControl Bot!\nWähle eine Option:",
-        reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("📈 Forecast anzeigen", callback_data="forecast")]]))
+    print(f"/start aufgerufen von {update.effective_user.id}")
+    await update.message.reply_text(
+        "Willkommen im CryptoTecControl Bot!\nWähle eine Option:",
+        reply_markup=InlineKeyboardMarkup([
+            [InlineKeyboardButton("📈 Forecast anzeigen", callback_data="forecast")]
+        ])
+    )
 
 # Button Handler
 async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
