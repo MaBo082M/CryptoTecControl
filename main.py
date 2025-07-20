@@ -1,37 +1,20 @@
-# -*- coding: utf-8 -*-
 import os
-import logging
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, ContextTypes
+from telegram.ext import Application, CommandHandler, ContextTypes
+from telegram import Update
 
+# Holt den Token aus den Railway-Umgebungsvariablen
 TOKEN = os.getenv("BOT_TOKEN")
-OWNER_ID = int(os.getenv("OWNER_ID", "123456789"))
 
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
-logger = logging.getLogger(__name__)
+# Erstelle die Telegram-Bot-Anwendung
+app = Application.builder().token(TOKEN).build()
 
+# /start-Befehl
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user_id = update.effective_user.id
-    if user_id != OWNER_ID:
-        await update.message.reply_text("🚫 Zugriff verweigert.")
-        return
+    await update.message.reply_text("👋 Wilkommen im CryptoTecControl Bot")
 
-    keyboard = [[InlineKeyboardButton("📊 Forecast", callback_data="forecast")]]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    await update.message.reply_text("Willkommen im CryptoTecControl Bot ⚙️", reply_markup=reply_markup)
+# Befehl registrieren
+app.add_handler(CommandHandler("start", start))
 
-async def handle_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    query = update.callback_query
-    await query.answer()
-    if query.data == "forecast":
-        await query.edit_message_text(text="📈 Forecast erfolgreich geöffnet.")
-print("Tagesziel: 100 EUR Netto")
-async def send_status_message(query):
-    await query.edit_message_text(text="📉 Status: Noch nicht erreicht")
-
-if __name__ == '__main__':
-    app = ApplicationBuilder().token(TOKEN).build()
-    app.add_handler(CommandHandler("start", start))
-    app.add_handler(CallbackQueryHandler(handle_button))
-    logger.info("Bot läuft...")
+# Bot starten
+if __name__ == "__main__":
     app.run_polling()
