@@ -100,13 +100,15 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = query.message.chat.id
 
     await query.answer()
+    print(f"Button gedrückt: {data} von Chat-ID: {chat_id}")
 
     if data == "forecast":
         await forecast(update, context)
     elif data == "sniper":
-        await query.edit_message_text("🤖 SniperBot ist aktiv. Modul-Status: BETA.")
+        sniper_status = os.getenv("SNIPER_STATUS", "BETA")
+        await query.edit_message_text(f"🤖 SniperBot ist aktiv. Modul-Status: {sniper_status}.")
     elif data == "monthly_forecast":
-        await query.edit_message_text("📅 Monatsprognose: Work in Progress…")
+        await query.edit_message_text("📅 Monatsprognose: Dynamische Prognose wird geladen… (Platzhalter)")
     elif data == "download_pdf":
         await query.edit_message_text("📄 Forecast-PDF: Link folgt demnächst auf crypto-tec.xyz")
     elif data == "hypocoin":
