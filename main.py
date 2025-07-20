@@ -53,17 +53,13 @@ Gewinn: +{sniper_profit:.2f} €
 
 Status: {status}"""
 
-        keyboard = [[
-            InlineKeyboardButton("🔄 Aktualisieren", callback_data="forecast")
-        ], [
-            InlineKeyboardButton("🤖 SniperBot-Status", callback_data="sniper")
-        ], [
-            InlineKeyboardButton("📅 Monats-Forecast", callback_data="monthly_forecast")
-        ], [
-            InlineKeyboardButton("📄 Forecast-PDF", callback_data="download_pdf")
-        ], [
-            InlineKeyboardButton("💰 HypoCoin", callback_data="hypocoin")
-        ]]
+        keyboard = [
+            [InlineKeyboardButton("🔄 Aktualisieren", callback_data="forecast")],
+            [InlineKeyboardButton("🤖 SniperBot-Status", callback_data="sniper")],
+            [InlineKeyboardButton("📅 Monats-Forecast", callback_data="monthly_forecast")],
+            [InlineKeyboardButton("📄 Forecast-PDF", callback_data="download_pdf")],
+            [InlineKeyboardButton("💰 HypoCoin", callback_data="hypocoin")]
+        ]
     else:
         text = f"""📈 Öffentliche Vorschau:
 Tagesziel: 100 €
@@ -71,11 +67,10 @@ Aktuell: {current:.2f} €
 Fortschritt: [{bar}] {percent} %
 
 💡 Hol dir den Vollzugang über crypto-tec.xyz"""
-        keyboard = [[
-            InlineKeyboardButton("🌐 Webseite öffnen", url="https://crypto-tec.xyz")
-        ], [
-            InlineKeyboardButton("🎟️ VIP-Zugang sichern", url=VIP_GROUP_LINK)
-        ]]
+        keyboard = [
+            [InlineKeyboardButton("🌐 Webseite öffnen", url="https://crypto-tec.xyz")],
+            [InlineKeyboardButton("🎟️ VIP-Zugang sichern", url=VIP_GROUP_LINK)]
+        ]
 
     path = generate_progress_chart(current, TARGET)
 
@@ -88,4 +83,31 @@ Fortschritt: [{bar}] {percent} %
         reply_markup=InlineKeyboardMarkup(keyboard)
     )
 
-# (Die restlichen Funktionen bleiben gleich, da forecast Buttons betroffen sind.)
+# /start Handler
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("Willkommen im CryptoTecControl Bot!\nWähle eine Option:",
+        reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("📈 Forecast anzeigen", callback_data="forecast")]]))
+
+# Button Handler
+async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    data = query.data
+
+    if data == "forecast":
+        await forecast(update, context)
+    elif data == "sniper":
+        await query.answer("SniperBot-Status wird geladen…")
+    elif data == "monthly_forecast":
+        await query.answer("Monats-Forecast kommt bald!")
+    elif data == "download_pdf":
+        await query.answer("Download-Link wird vorbereitet…")
+    elif data == "hypocoin":
+        await query.answer("HypoCoin-Funktion wird aktiviert…")
+    else:
+        await query.answer("Unbekannter Befehl")
+
+app.add_handler(CommandHandler("start", start))
+app.add_handler(CallbackQueryHandler(button_handler))
+
+if __name__ == "__main__":
+    app.run_polling()
