@@ -134,13 +134,13 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     if user_id not in OWNER_IDS:
         keyboard = [[InlineKeyboardButton("🌐 Website öffnen", url="https://crypto-tec.xyz")]]
-        await update.message.reply_text("🚫 Zugriff verweigert. Nur mit Einladung nutzbar.", reply_markup=InlineKeyboardMarkup(keyboard))
+        await update.effective_chat.send_message("🚫 Zugriff verweigert. Nur mit Einladung nutzbar.", reply_markup=InlineKeyboardMarkup(keyboard))
         return
     keyboard = [[
         InlineKeyboardButton("📊 Forecast anzeigen", callback_data="forecast"),
         InlineKeyboardButton("🤖 SniperBot-Status", callback_data="sniper")
     ]]
-    await update.message.reply_text("👋 Willkommen im CryptoTecControl Bot\n\nWähle eine Option:", reply_markup=InlineKeyboardMarkup(keyboard))
+    await update.effective_chat.send_message("👋 Willkommen im CryptoTecControl Bot\n\nWähle eine Option:", reply_markup=InlineKeyboardMarkup(keyboard))
 
 # Handler
 app.add_handler(CommandHandler("start", start))
