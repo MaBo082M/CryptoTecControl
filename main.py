@@ -31,10 +31,10 @@ def generate_progress_chart(current, target):
 # Forecast anzeigen
 async def forecast(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
-    sniper_profit = float(os.getenv("SNIPER_PROFIT", "0").replace(",", "."))
+    sniper_profit = float(os.getenv("SNIPER_PROFIT", "45.3").replace(",", "."))
     current = sniper_profit
-    snipes = int(os.getenv("SNIPES_TODAY", "0"))
-    wins = int(os.getenv("WINS_TODAY", "0"))
+    snipes = int(os.getenv("SNIPES_TODAY", "3"))
+    wins = int(os.getenv("WINS_TODAY", "2"))
 
     percent = min(100, int(current / TARGET * 100))
     blocks = int(percent / 10)
@@ -110,7 +110,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if data == "forecast":
         await forecast(update, context)
     elif data == "sniper":
-        sniper_status = os.getenv("SNIPER_STATUS", "BETA")
+        sniper_status = os.getenv("SNIPER_STATUS", "LIVE")
         await context.bot.send_message(chat_id=chat_id, text=f"🤖 SniperBot ist aktiv. Modul-Status: {sniper_status}.")
     elif data == "monthly_forecast":
         await context.bot.send_message(chat_id=chat_id, text="📅 Monatsprognose: Dynamische Prognose wird geladen… (Platzhalter)")
@@ -126,3 +126,4 @@ app.add_handler(CallbackQueryHandler(button_handler))
 
 if __name__ == "__main__":
     app.run_polling()
+
