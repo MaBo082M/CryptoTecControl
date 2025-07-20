@@ -76,19 +76,12 @@ Fortschritt: [{bar}] {percent} %
 
     if update.callback_query:
         await update.callback_query.answer()
-        await context.bot.send_photo(
-            chat_id=update.effective_chat.id,
-            photo=open(path, "rb"),
-            caption=text,
-            reply_markup=InlineKeyboardMarkup(keyboard)
-        )
-    else:
-        await context.bot.send_photo(
-            chat_id=update.effective_chat.id,
-            photo=open(path, "rb"),
-            caption=text,
-            reply_markup=InlineKeyboardMarkup(keyboard)
-        )
+    await context.bot.send_photo(
+        chat_id=update.effective_chat.id,
+        photo=open(path, "rb"),
+        caption=text,
+        reply_markup=InlineKeyboardMarkup(keyboard)
+    )
 
 # HypoCoin
 async def hypocoin(update: Update, context: ContextTypes.DEFAULT_TYPE):
