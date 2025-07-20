@@ -31,10 +31,10 @@ def generate_progress_chart(current, target):
 # Forecast anzeigen
 async def forecast(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
-    current = float(os.getenv("TOTAL_PROFIT", "0").replace(",", "."))
+    sniper_profit = float(os.getenv("SNIPER_PROFIT", "0").replace(",", "."))
+    current = sniper_profit
     snipes = int(os.getenv("SNIPES_TODAY", "0"))
     wins = int(os.getenv("WINS_TODAY", "0"))
-    sniper_profit = float(os.getenv("SNIPER_PROFIT", "0").replace(",", "."))
 
     percent = min(100, int(current / TARGET * 100))
     blocks = int(percent / 10)
