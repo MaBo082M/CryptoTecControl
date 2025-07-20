@@ -23,7 +23,7 @@ async def handle_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
     if query.data == "forecast":
-        await query.edit_message_text(text="📈 Forecast:
+        await query.edit_message_text(text="📈 Forecast erfolgreich geöffnet.")
 Tagesziel 100 € Netto
 Status: 🔄 Noch nicht erreicht")
 
