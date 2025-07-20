@@ -92,24 +92,22 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     data = query.data
-    chat_id = query.message.chat_id
+    chat_id = query.message.chat.id
+
+    await query.answer()
 
     if data == "forecast":
         await forecast(update, context)
     elif data == "sniper":
-        await query.answer("SniperBot-Status wird geladen…")
         await context.bot.send_message(chat_id, "🤖 SniperBot ist aktiv. Modul-Status: BETA.")
     elif data == "monthly_forecast":
-        await query.answer("Monats-Forecast kommt bald!")
         await context.bot.send_message(chat_id, "📅 Monatsprognose: Work in Progress…")
     elif data == "download_pdf":
-        await query.answer("Download-Link wird vorbereitet…")
         await context.bot.send_message(chat_id, "📄 Forecast-PDF: Link folgt demnächst auf crypto-tec.xyz")
     elif data == "hypocoin":
-        await query.answer("HypoCoin-Funktion wird aktiviert…")
         await context.bot.send_message(chat_id, "💰 HypoCoin-Modul wird geladen… Bald verfügbar für VIPs.")
     else:
-        await query.answer("Unbekannter Befehl")
+        await context.bot.send_message(chat_id, "Unbekannter Befehl.")
 
 app.add_handler(CommandHandler("start", start))
 app.add_handler(CallbackQueryHandler(button_handler))
