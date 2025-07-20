@@ -7,6 +7,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 TOKEN = os.getenv("BOT_TOKEN")
 OWNER_IDS = list(map(int, os.getenv("OWNER_IDS", "1349917110").split(",")))
 TARGET = float(os.getenv("TARGET_EUR", "100").replace(",", "."))
+VIP_GROUP_LINK = os.getenv("VIP_GROUP_LINK", "https://t.me/+EXAMPLE")
 
 app = Application.builder().token(TOKEN).build()
 scheduler = BackgroundScheduler()
@@ -66,7 +67,8 @@ Fortschritt: [{bar}] {percent} %
 
 💡 Hol dir den Vollzugang über crypto-tec.xyz"""
         keyboard = [[
-            InlineKeyboardButton("🌐 Webseite öffnen", url="https://crypto-tec.xyz")
+            InlineKeyboardButton("🌐 Webseite öffnen", url="https://crypto-tec.xyz"),
+            InlineKeyboardButton("🎟️ VIP-Zugang sichern", url=VIP_GROUP_LINK)
         ]]
 
     path = generate_progress_chart(current, TARGET)
@@ -153,7 +155,10 @@ async def download_pdf(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     if user_id not in OWNER_IDS:
-        keyboard = [[InlineKeyboardButton("🌐 Website öffnen", url="https://crypto-tec.xyz")]]
+        keyboard = [[
+            InlineKeyboardButton("🌐 Website öffnen", url="https://crypto-tec.xyz"),
+            InlineKeyboardButton("🎟️ VIP-Zugang sichern", url=VIP_GROUP_LINK)
+        ]]
         await update.effective_chat.send_message("🚫 Zugriff verweigert. Nur mit Einladung nutzbar.", reply_markup=InlineKeyboardMarkup(keyboard))
         return
     keyboard = [[
