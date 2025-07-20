@@ -26,8 +26,8 @@ async def handle_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if query.data == "forecast":
         await query.edit_message_text(text="📈 Forecast erfolgreich geöffnet.")
 print("Tagesziel: 100 EUR Netto")
-await query.edit_message_text(text="🔄 Status: Noch nicht erreicht")
-
+async def send_status_message(query):
+    await query.edit_message_text(text="📉 Status: Noch nicht erreicht")
 
 if __name__ == '__main__':
     app = ApplicationBuilder().token(TOKEN).build()
