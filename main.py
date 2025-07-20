@@ -57,7 +57,8 @@ Status: {status}"""
             InlineKeyboardButton("🔄 Aktualisieren", callback_data="forecast"),
             InlineKeyboardButton("🤖 SniperBot-Status", callback_data="sniper"),
             InlineKeyboardButton("📅 Monats-Forecast", callback_data="monthly_forecast"),
-            InlineKeyboardButton("📄 Forecast-PDF", callback_data="download_pdf")
+            InlineKeyboardButton("📄 Forecast-PDF", callback_data="download_pdf"),
+            InlineKeyboardButton("💰 HypoCoin", callback_data="hypocoin")
         ]]
     else:
         text = f"""📈 Öffentliche Vorschau:
@@ -88,6 +89,29 @@ Fortschritt: [{bar}] {percent} %
             caption=text,
             reply_markup=InlineKeyboardMarkup(keyboard)
         )
+
+# HypoCoin
+async def hypocoin(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_id = update.effective_user.id
+    if user_id not in OWNER_IDS:
+        await update.callback_query.answer("🚫 Kein Zugriff", show_alert=True)
+        return
+
+    text = f"""🪙 HypoCoin-Modul:
+Projektname: HypoCoin ($HYP0)
+Zugang: VIP-Bereich
+
+🔓 Monatliche Einnahmenprognose aktiv
+📈 Forecast verfügbar
+📊 Pump-Daten im Owner-Dashboard
+
+➡️ Zugriff: https://crypto-tec.xyz/hypocoin-access"""
+
+    keyboard = [[
+        InlineKeyboardButton("⬅️ Zurück", callback_data="forecast")
+    ]]
+
+    await update.callback_query.edit_message_text(text=text, reply_markup=InlineKeyboardMarkup(keyboard))
 
 # SniperBot Status anzeigen
 async def sniper(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -184,9 +208,11 @@ scheduler.add_job(lambda: asyncio.run(daily_check()), 'cron', hour=12, minute=0)
 app.add_handler(CommandHandler("start", start))
 app.add_handler(CallbackQueryHandler(forecast, pattern="^forecast$"))
 app.add_handler(CallbackQueryHandler(sniper, pattern="^sniper$"))
-app.add_handler(CallbackQueryHandler(monthly_forecast, pattern="^monthly_forecast$"))
-app.add_handler(CallbackQueryHandler(download_pdf, pattern="^download_pdf$"))
+app.add_handler(CallbackQueryHandler(monthly_forecast, pattern="^monthly_forecast"))
+app.add_handler(CallbackQueryHandler(download_pdf, pattern="^download_pdf"))
+app.add_handler(CallbackQueryHandler(hypocoin, pattern="^hypocoin$"))
 
 # Start Polling
 if __name__ == "__main__":
     app.run_polling()
+
