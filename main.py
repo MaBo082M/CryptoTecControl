@@ -122,7 +122,14 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif data == "download_pdf":
         await context.bot.send_message(chat_id=chat_id, text="📄 Forecast-PDF: Link folgt demnächst auf crypto-tec.xyz")
     elif data == "deposit":
-        msg = f"💸 Du kannst Einzahlungen an folgende Wallets senden:\n\n🔹 SOL: `{SOL_WALLET}`\n🔸 BSC: `{BSC_WALLET}`\n🔶 ETH: `{ETH_WALLET}`\n\nBitte sende exakt den Betrag, den du im SniperBot einsetzen möchtest."
+        msg = f"""💸 *Einzahlung für SniperBot*  
+Bitte sende *exakt 0,6 SOL* an folgende Adresse:
+
+`{SOL_WALLET}`
+
+📷 Alternativ kannst du den *QR-Code scannen*, den du zuvor erhalten hast.
+
+⚠️ Wichtig: Der Betrag wird sofort deinem Bot-Konto zugewiesen, sobald er eingeht."""
         await context.bot.send_message(chat_id=chat_id, text=msg, parse_mode="Markdown")
     elif data == "hypocoin":
         await context.bot.send_message(chat_id=chat_id, text="💰 HypoCoin-Modul wird geladen… Bald verfügbar für VIPs.")
